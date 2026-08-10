@@ -3,7 +3,8 @@
 	"package": "dev.birinder.ac.client.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"client": [
-		"GameRendererMixin"
+		"GameRendererMixin",
+		"AbstractClientPlayerEntityMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
