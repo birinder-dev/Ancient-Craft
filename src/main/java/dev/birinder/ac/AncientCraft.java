@@ -19,6 +19,7 @@ public class AncientCraft implements ModInitializer {
 		ModItems.registerModItems();
 		ModBlocks.registerModBlocks();
 		ModEntities.registerModEntities();
+		dev.birinder.ac.worldgen.ModWorldGen.generateWorldGen();
 
 		LOGGER.info("Hello Fabric world!");
 	}

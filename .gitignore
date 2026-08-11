@@ -24,19 +24,33 @@ bin/
 .classpath
 .project
 
-# macos
-
+# macos & windows OS files
 *.DS_Store
+Thumbs.db
+desktop.ini
+*.tmp
+*.bak
 
-# fabric
-
+# fabric runtime (dev mods, shaderpacks, recordings, isometric renders, logs)
 run/
+isometric-renders/
+screenshots/
+replay_videos/
+replay_recordings/
 
-# java
+# temporary demo renders & scratch
+pebble_demo.png
+pebbles_side_by_side_16_9.png
+*.png.bak
+scratch/
 
+# java & logs
 hs_err_*.log
 replay_*.log
 *.hprof
 *.jfr
 
 gradle-9.5.1-bin.zip
+
+# chat history logs
+.chat_history/

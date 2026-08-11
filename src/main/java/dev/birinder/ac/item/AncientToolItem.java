@@ -19,7 +19,11 @@ import java.util.function.Predicate;
 public class AncientToolItem extends Item {
 
     public static final Predicate<ItemStack> SLINGSHOT_AMMO = stack -> stack.isOf(Items.SNOWBALL)
-            || stack.isOf(Items.CLAY_BALL) || stack.isOf(ModItems.PEBBLE);
+            || stack.isOf(Items.CLAY_BALL)
+            || stack.isOf(ModItems.PEBBLE)
+            || stack.isOf(ModItems.POISON_PEBBLE)
+            || stack.isOf(ModItems.SOPORIFIC_STONE)
+            || stack.isOf(ModItems.FIRE_PEBBLE);
 
     // Charge duration to reach 100% power (20 ticks = 1 second)
     private static final int FULL_CHARGE_TICKS = 20;
@@ -119,7 +123,8 @@ public class AncientToolItem extends Item {
 
                 // Set entity stack so the in-flight projectile renders as the thrown item
                 projectile.setItem(ammoStack.copyWithCount(1));
-                projectile.setVelocity(player, player.getPitch(), player.getYaw(), 0.0F, pullProgress * 2.5F, 1.0F);
+                // Set velocity (reduced speed from 2.5F to 1.4F for balanced slingshot range)
+                projectile.setVelocity(player, player.getPitch(), player.getYaw(), 0.0F, pullProgress * 1.4F, 1.0F);
 
                 world.spawnEntity(projectile);
 
