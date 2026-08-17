@@ -11,6 +11,9 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 import net.minecraft.util.Identifier;
 
+import dev.birinder.ac.client.gui.SpyglassHudOverlay;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+
 public class AncientCraftClient implements ClientModInitializer {
 
 	@Override
@@ -19,6 +22,9 @@ public class AncientCraftClient implements ClientModInitializer {
 
 		// Cutout rendering for ground pebble block
 		BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.GROUND_PEBBLE, RenderLayer.getCutout());
+
+		// Register Spyglass HUD Inspection overlay
+		HudRenderCallback.EVENT.register(new SpyglassHudOverlay());
 
 		ModelPredicateProviderRegistry.register(
 				ModItems.ANCIENT_TOOL,

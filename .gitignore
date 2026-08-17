@@ -1,9 +1,14 @@
-# gradle
-
+# gradle & build artifacts
 .gradle/
 build/
 out/
 classes/
+*.jar
+
+# standalone release projects & publishing files
+standalone_mods/
+DESCRIPTION.md
+logo_spyglass*.png
 
 # eclipse
 

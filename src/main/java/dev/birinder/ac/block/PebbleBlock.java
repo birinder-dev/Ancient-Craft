@@ -36,16 +36,33 @@ public class PebbleBlock extends Block {
     @Override
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
         BlockPos downPos = pos.down();
-        return world.getBlockState(downPos).isSideSolidFullSquare(world, downPos, Direction.UP);
+        BlockState currentState = world.getBlockState(pos);
+        return world.getBlockState(downPos).isSideSolidFullSquare(world, downPos, Direction.UP)
+                && (currentState.isAir() || currentState.isReplaceable());
     }
 
-    // Right-click to pick up 1 to 3 pebbles! (Updated for MC 1.21.1)
+    // Right-click to pick up 1 to 3 pebbles (30% chance for Poison Pebble drop!)
     @Override
     protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!world.isClient) {
-            // Give 1 to 3 pebbles
-            int count = world.getRandom().nextInt(3) + 1; // 1, 2, or 3
-            dropStack(world, pos, new ItemStack(ModItems.PEBBLE, count));
+            int total = world.getRandom().nextInt(3) + 1; // 1, 2, or 3
+            int poisonCount = 0;
+            int normalCount = 0;
+
+            for (int i = 0; i < total; i++) {
+                if (world.getRandom().nextFloat() < 0.30F) { // 30% chance per pebble
+                    poisonCount++;
+                } else {
+                    normalCount++;
+                }
+            }
+
+            if (normalCount > 0) {
+                dropStack(world, pos, new ItemStack(ModItems.PEBBLE, normalCount));
+            }
+            if (poisonCount > 0) {
+                dropStack(world, pos, new ItemStack(ModItems.POISON_PEBBLE, poisonCount));
+            }
 
             // Play pickup sound
             world.playSound(null, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.5F, 1.0F);

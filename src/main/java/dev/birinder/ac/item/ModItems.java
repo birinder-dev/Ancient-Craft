@@ -27,18 +27,14 @@ public class ModItems {
                         "poison_pebble",
                         new PebbleItem(new Item.Settings().maxCount(64)));
 
-        public static final Item SOPORIFIC_STONE = register(
-                        "soporific_stone",
-                        new PebbleItem(new Item.Settings().maxCount(64)));
-
-        public static final Item FIRE_PEBBLE = register(
-                        "fire_pebble",
-                        new PebbleItem(new Item.Settings().maxCount(64)));
-
         private static Item register(String name, Item item) {
+                net.minecraft.util.Identifier id = AncientCraft.id(name);
+                if (Registries.ITEM.containsId(id)) {
+                        return Registries.ITEM.get(id);
+                }
                 return Registry.register(
                                 Registries.ITEM,
-                                AncientCraft.id(name),
+                                id,
                                 item);
         }
 
@@ -51,8 +47,6 @@ public class ModItems {
                                         entries.add(PEBBLE);
                                         entries.add(GROUND_PEBBLE);
                                         entries.add(POISON_PEBBLE);
-                                        entries.add(SOPORIFIC_STONE);
-                                        entries.add(FIRE_PEBBLE);
                                 });
         }
 }

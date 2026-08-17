@@ -1,11 +1,4 @@
 {
-    "type": "minecraft:simple_block",
-    "config": {
-        "to_place": {
-            "type": "minecraft:simple_state_provider",
-            "state": {
-                "Name": "ancient_craft:ground_pebble"
-            }
-        }
-    }
+    "type": "ancient_craft:ground_pebble",
+    "config": {}
 }

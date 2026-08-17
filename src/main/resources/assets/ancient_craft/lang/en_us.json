@@ -1,4 +1,6 @@
 {
   "item.ancient_craft.ancient_tool": "Slingshot",
-  "item.ancient_craft.pebble": "Pebble"
+  "item.ancient_craft.pebble": "Pebble",
+  "block.ancient_craft.ground_pebble": "Ground Pebble",
+  "item.ancient_craft.poison_pebble": "Poison Pebble"
 }

@@ -22,8 +22,10 @@ public class AncientToolItem extends Item {
             || stack.isOf(Items.CLAY_BALL)
             || stack.isOf(ModItems.PEBBLE)
             || stack.isOf(ModItems.POISON_PEBBLE)
-            || stack.isOf(ModItems.SOPORIFIC_STONE)
-            || stack.isOf(ModItems.FIRE_PEBBLE);
+            || stack.isOf(Items.POTATO)
+            || stack.isOf(Items.CARROT)
+            || stack.isOf(Items.POISONOUS_POTATO)
+            || stack.isOf(Items.BEETROOT);
 
     // Charge duration to reach 100% power (20 ticks = 1 second)
     private static final int FULL_CHARGE_TICKS = 20;
@@ -111,9 +113,12 @@ public class AncientToolItem extends Item {
                 if (ammoStack.isOf(ModItems.PEBBLE)) {
                     baseDamage = 4.0F; // Pebble
                 } else if (ammoStack.isOf(Items.CLAY_BALL)) {
-                    baseDamage = 3.0F; // Clay Ball
+                    baseDamage = 2.0F; // Clay Ball
                 } else if (ammoStack.isOf(Items.SNOWBALL)) {
                     baseDamage = 1.5F; // Snowball
+                } else if (ammoStack.isOf(Items.POTATO) || ammoStack.isOf(Items.CARROT)
+                        || ammoStack.isOf(Items.POISONOUS_POTATO) || ammoStack.isOf(Items.BEETROOT)) {
+                    baseDamage = 1.0F; // Minimal food damage (0.5 heart)
                 } else {
                     baseDamage = 2.0F;
                 }

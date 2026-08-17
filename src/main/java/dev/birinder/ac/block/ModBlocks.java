@@ -14,9 +14,13 @@ public class ModBlocks {
             new PebbleBlock(AbstractBlock.Settings.copy(Blocks.STONE).nonOpaque().breakInstantly()));
 
     private static Block register(String name, Block block) {
+        net.minecraft.util.Identifier id = AncientCraft.id(name);
+        if (Registries.BLOCK.containsId(id)) {
+            return Registries.BLOCK.get(id);
+        }
         return Registry.register(
                 Registries.BLOCK,
-                AncientCraft.id(name),
+                id,
                 block);
     }
 
