@@ -1,0 +1,12 @@
+{
+  "voice.v0.hurt_1": { "category": "player", "sounds": [ "ancient_craft:voices/v0_hurt_1" ] },
+  "voice.v0.hurt_2": { "category": "player", "sounds": [ "ancient_craft:voices/v0_hurt_2" ] },
+  "voice.v0.hurt_3": { "category": "player", "sounds": [ "ancient_craft:voices/v0_hurt_3" ] },
+
+  "voice.v0.threat_1": { "category": "player", "sounds": [ "ancient_craft:voices/v0_threat_1" ] },
+  "voice.v0.threat_2": { "category": "player", "sounds": [ "ancient_craft:voices/v0_threat_2" ] },
+  "voice.v0.threat_3": { "category": "player", "sounds": [ "ancient_craft:voices/v0_threat_3" ] },
+
+  "voice.v0.greet_1": { "category": "player", "sounds": [ "ancient_craft:voices/v0_greet_1" ] },
+  "voice.v0.greet_2": { "category": "player", "sounds": [ "ancient_craft:voices/v0_greet_2" ] }
+}
