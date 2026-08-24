@@ -1,0 +1,55 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "minecraft:block/spruce_planks",
+    "wood": "minecraft:block/spruce_planks",
+    "dark": "minecraft:block/dark_oak_planks"
+  },
+  "elements": [
+    {
+      "name": "thick_seat_plank",
+      "from": [0, 6, 2],
+      "to": [16, 9.5, 14],
+      "faces": {
+        "north": { "uv": [0, 0, 16, 3.5], "texture": "#wood" },
+        "east": { "uv": [2, 0, 14, 3.5], "texture": "#wood" },
+        "south": { "uv": [0, 0, 16, 3.5], "texture": "#wood" },
+        "west": { "uv": [2, 0, 14, 3.5], "texture": "#wood" },
+        "up": { "uv": [0, 2, 16, 14], "texture": "#wood" },
+        "down": { "uv": [0, 2, 16, 14], "texture": "#wood" }
+      }
+    },
+    {
+      "name": "bench_trestle_right_front",
+      "from": [12.5, 0, 3],
+      "to": [14.5, 6, 6],
+      "faces": {
+        "north": { "uv": [12, 0, 14, 6], "texture": "#dark" },
+        "east": { "uv": [3, 0, 6, 6], "texture": "#dark" },
+        "west": { "uv": [3, 0, 6, 6], "texture": "#dark" },
+        "down": { "uv": [12, 3, 14, 6], "texture": "#dark" }
+      }
+    },
+    {
+      "name": "bench_trestle_right_back",
+      "from": [12.5, 0, 10],
+      "to": [14.5, 6, 13],
+      "faces": {
+        "south": { "uv": [12, 0, 14, 6], "texture": "#dark" },
+        "east": { "uv": [10, 0, 13, 6], "texture": "#dark" },
+        "west": { "uv": [10, 0, 13, 6], "texture": "#dark" },
+        "down": { "uv": [12, 10, 14, 13], "texture": "#dark" }
+      }
+    },
+    {
+      "name": "bench_trestle_right_arch",
+      "from": [12.5, 2, 6],
+      "to": [14.5, 6, 10],
+      "faces": {
+        "east": { "uv": [6, 2, 10, 6], "texture": "#dark" },
+        "west": { "uv": [6, 2, 10, 6], "texture": "#dark" },
+        "down": { "uv": [12, 6, 14, 10], "texture": "#dark" }
+      }
+    }
+  ]
+}

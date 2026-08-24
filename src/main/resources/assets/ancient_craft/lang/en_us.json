@@ -2,5 +2,17 @@
   "item.ancient_craft.ancient_tool": "Slingshot",
   "item.ancient_craft.pebble": "Pebble",
   "block.ancient_craft.ground_pebble": "Ground Pebble",
-  "item.ancient_craft.poison_pebble": "Poison Pebble"
+  "item.ancient_craft.poison_pebble": "Poison Pebble",
+  "block.ancient_craft.gambling_table": "Gambling Table",
+  "item.ancient_craft.gambling_table": "Gambling Table",
+  "block.ancient_craft.gambling_stool": "Gambling Stool",
+  "item.ancient_craft.gambling_stool": "Gambling Stool",
+  "block.ancient_craft.tavern_stool": "Tavern Stool",
+  "item.ancient_craft.tavern_stool": "Tavern Stool",
+  "block.ancient_craft.tavern_table": "Tavern Table",
+  "item.ancient_craft.tavern_table": "Tavern Table",
+  "block.ancient_craft.tavern_bench": "Tavern Bench",
+  "item.ancient_craft.tavern_bench": "Tavern Bench",
+  "entity.ancient_craft.gambler": "The Gambler",
+  "item.ancient_craft.gambler_spawn_egg": "Gambler Spawn Egg"
 }

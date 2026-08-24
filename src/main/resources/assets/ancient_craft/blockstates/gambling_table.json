@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "ancient_craft:block/gambling_table", "y": 0 },
+    "facing=south": { "model": "ancient_craft:block/gambling_table", "y": 180 },
+    "facing=east": { "model": "ancient_craft:block/gambling_table", "y": 90 },
+    "facing=west": { "model": "ancient_craft:block/gambling_table", "y": 270 }
+  }
+}

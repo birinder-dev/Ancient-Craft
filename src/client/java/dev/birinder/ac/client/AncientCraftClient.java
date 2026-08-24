@@ -2,8 +2,10 @@ package dev.birinder.ac.client;
 
 import dev.birinder.ac.block.ModBlocks;
 import dev.birinder.ac.client.gui.SpyglassHudOverlay;
+import dev.birinder.ac.client.render.GamblerEntityRenderer;
 import dev.birinder.ac.client.speech.SpeechBubbleManager;
 import dev.birinder.ac.entity.ModEntities;
+import dev.birinder.ac.entity.custom.GamblerEntity;
 import dev.birinder.ac.item.ModItems;
 import dev.birinder.ac.sound.ModSounds;
 import net.fabricmc.api.ClientModInitializer;
@@ -35,7 +37,7 @@ public class AncientCraftClient implements ClientModInitializer {
 	private static long lastThreatCheckTime = 0;
 
 	private static boolean canSpeak(Entity entity) {
-		return entity instanceof VillagerEntity || entity instanceof WanderingTraderEntity;
+		return entity instanceof VillagerEntity || entity instanceof WanderingTraderEntity || entity instanceof GamblerEntity;
 	}
 
 	private static final String[] HURT_LINES = {
@@ -58,9 +60,16 @@ public class AncientCraftClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		EntityRendererRegistry.register(ModEntities.SLINGSHOT_PROJECTILE, FlyingItemEntityRenderer::new);
+		EntityRendererRegistry.register(ModEntities.GAMBLER, GamblerEntityRenderer::new);
+		EntityRendererRegistry.register(ModEntities.SEAT, dev.birinder.ac.client.render.EmptyEntityRenderer::new);
 
-		// Cutout rendering for ground pebble block
+		// Cutout rendering for ground pebble, table, and stools
 		BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.GROUND_PEBBLE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.GAMBLING_TABLE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.GAMBLING_STOOL, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.TAVERN_STOOL, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.TAVERN_TABLE, RenderLayer.getCutout());
+		BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.TAVERN_BENCH, RenderLayer.getCutout());
 
 		// Register Spyglass HUD Inspection overlay
 		HudRenderCallback.EVENT.register(new SpyglassHudOverlay());

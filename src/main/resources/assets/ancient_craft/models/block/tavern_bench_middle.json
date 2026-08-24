@@ -1,0 +1,22 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "minecraft:block/spruce_planks",
+    "wood": "minecraft:block/spruce_planks"
+  },
+  "elements": [
+    {
+      "name": "thick_seat_plank",
+      "from": [0, 6, 2],
+      "to": [16, 9.5, 14],
+      "faces": {
+        "north": { "uv": [0, 0, 16, 3.5], "texture": "#wood" },
+        "east": { "uv": [2, 0, 14, 3.5], "texture": "#wood" },
+        "south": { "uv": [0, 0, 16, 3.5], "texture": "#wood" },
+        "west": { "uv": [2, 0, 14, 3.5], "texture": "#wood" },
+        "up": { "uv": [0, 2, 16, 14], "texture": "#wood" },
+        "down": { "uv": [0, 2, 16, 14], "texture": "#wood" }
+      }
+    }
+  ]
+}

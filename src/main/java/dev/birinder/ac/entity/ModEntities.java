@@ -1,7 +1,10 @@
 package dev.birinder.ac.entity;
 
 import dev.birinder.ac.AncientCraft;
+import dev.birinder.ac.entity.custom.GamblerEntity;
+import dev.birinder.ac.entity.custom.SeatEntity;
 import dev.birinder.ac.entity.projectile.SlingshotProjectileEntity;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -27,7 +30,22 @@ public class ModEntities {
                     .maxTrackingRange(4)
                     .trackingTickInterval(10));
 
+    public static final EntityType<GamblerEntity> GAMBLER = register(
+            "gambler",
+            EntityType.Builder.create(GamblerEntity::new, SpawnGroup.CREATURE)
+                    .dimensions(0.6F, 1.95F)
+                    .maxTrackingRange(8)
+                    .trackingTickInterval(3));
+
+    public static final EntityType<SeatEntity> SEAT = register(
+            "seat",
+            EntityType.Builder.<SeatEntity>create(SeatEntity::new, SpawnGroup.MISC)
+                    .dimensions(0.01F, 0.01F)
+                    .maxTrackingRange(4)
+                    .trackingTickInterval(20));
+
     public static void registerModEntities() {
         AncientCraft.LOGGER.info("Registering Ancient Craft entities");
+        FabricDefaultAttributeRegistry.register(GAMBLER, GamblerEntity.createGamblerAttributes());
     }
 }
