@@ -86,7 +86,8 @@ public class GamblingTableBlockEntity extends BlockEntity {
 
         PlayerEntity humanPlayer = null;
         GamblerEntity gamblerOpponent = null;
-        VillagerEntity villagerOpponent = null;
+        LivingEntity villagerOpponent = null;
+        String opponentTitle = "Village Trader";
         PlayerEntity secondHuman = null;
 
         // Classify Occupant 1
@@ -94,8 +95,12 @@ public class GamblingTableBlockEntity extends BlockEntity {
             humanPlayer = p1;
         } else if (occupant1 instanceof GamblerEntity g1) {
             gamblerOpponent = g1;
+        } else if (occupant1 instanceof dev.birinder.ac.entity.custom.TavernVillagerEntity tv1) {
+            villagerOpponent = tv1;
+            opponentTitle = "Tavern Local";
         } else if (occupant1 instanceof VillagerEntity v1) {
             villagerOpponent = v1;
+            opponentTitle = "Village Trader";
         }
 
         // Classify Occupant 2
@@ -107,8 +112,12 @@ public class GamblingTableBlockEntity extends BlockEntity {
             }
         } else if (occupant2 instanceof GamblerEntity g2) {
             gamblerOpponent = g2;
+        } else if (occupant2 instanceof dev.birinder.ac.entity.custom.TavernVillagerEntity tv2) {
+            villagerOpponent = tv2;
+            opponentTitle = "Tavern Local";
         } else if (occupant2 instanceof VillagerEntity v2) {
             villagerOpponent = v2;
+            opponentTitle = "Village Trader";
         }
 
         // Case A: Singleplayer (1 Human Player vs 1 Gambler NPC)
@@ -117,9 +126,9 @@ public class GamblingTableBlockEntity extends BlockEntity {
                     .formatted(Formatting.GOLD, Formatting.BOLD), true);
             gamblerOpponent.onMatchInitiated(humanPlayer);
         }
-        // Case B: Singleplayer (1 Human Player vs 1 Local Villager)
+        // Case B: Singleplayer (1 Human Player vs 1 Local Villager / Tavern Villager)
         else if (humanPlayer != null && villagerOpponent != null) {
-            humanPlayer.sendMessage(Text.literal("🎲 Match Starting vs Village Trader! (Stakes: " + betLimit + " Emeralds)")
+            humanPlayer.sendMessage(Text.literal("🎲 Match Starting vs " + opponentTitle + "! (Stakes: " + betLimit + " Emeralds)")
                     .formatted(Formatting.GREEN, Formatting.BOLD), true);
         }
         // Case C: Multiplayer (2 Human Players)

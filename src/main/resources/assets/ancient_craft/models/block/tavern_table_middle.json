@@ -2,7 +2,8 @@
   "parent": "minecraft:block/block",
   "textures": {
     "particle": "minecraft:block/spruce_planks",
-    "wood": "minecraft:block/spruce_planks"
+    "wood": "minecraft:block/spruce_planks",
+    "dark": "minecraft:block/dark_oak_planks"
   },
   "elements": [
     {
@@ -16,6 +17,16 @@
         "west": { "uv": [0, 0, 16, 3], "texture": "#wood" },
         "up": { "uv": [0, 0, 16, 16], "texture": "#wood" },
         "down": { "uv": [0, 0, 16, 16], "texture": "#wood" }
+      }
+    },
+    {
+      "name": "center_beam",
+      "from": [0, 0, 7],
+      "to": [16, 11, 9],
+      "faces": {
+        "north": { "uv": [0, 0, 16, 11], "texture": "#dark" },
+        "south": { "uv": [0, 0, 16, 11], "texture": "#dark" },
+        "down": { "uv": [0, 7, 16, 9], "texture": "#dark" }
       }
     }
   ]

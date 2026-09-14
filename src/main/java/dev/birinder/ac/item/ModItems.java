@@ -57,6 +57,14 @@ public class ModItems {
             "gambler_spawn_egg",
             new SpawnEggItem(ModEntities.GAMBLER, 0x1E4D2B, 0xD4AF37, new Item.Settings()));
 
+    public static final Item TAVERN_VILLAGER_SPAWN_EGG = register(
+            "tavern_villager_spawn_egg",
+            new SpawnEggItem(ModEntities.TAVERN_VILLAGER, 0x563C33, 0xBD8B72, new Item.Settings()));
+
+    public static final Item GUARD_SPAWN_EGG = register(
+            "guard_spawn_egg",
+            new SpawnEggItem(ModEntities.GUARD, 0x9E2B25, 0xD4AF37, new Item.Settings()));
+
     private static Item register(String name, Item item) {
         net.minecraft.util.Identifier id = AncientCraft.id(name);
         if (Registries.ITEM.containsId(id)) {
@@ -88,6 +96,8 @@ public class ModItems {
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS)
                 .register(entries -> {
                     entries.add(GAMBLER_SPAWN_EGG);
+                    entries.add(TAVERN_VILLAGER_SPAWN_EGG);
+                    entries.add(GUARD_SPAWN_EGG);
                 });
     }
 }

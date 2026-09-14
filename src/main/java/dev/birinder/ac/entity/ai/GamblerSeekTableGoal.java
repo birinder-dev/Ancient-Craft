@@ -32,16 +32,25 @@ public class GamblerSeekTableGoal extends Goal {
         if (this.searchCooldown-- > 0) {
             return false;
         }
-        this.searchCooldown = 15; // Fast check: every 0.75 seconds
+        this.searchCooldown = 20; // Check every 1 second
 
         this.targetStoolPos = findNearestGamblingStool();
-        return this.targetStoolPos != null;
+        if (this.targetStoolPos != null) {
+            SitUtil.claimSeat(this.gambler.getWorld(), this.targetStoolPos, this.gambler.getUuid(), 300);
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean shouldContinue() {
-        return targetStoolPos != null && !this.gambler.hasVehicle()
-                && !SitUtil.isSeatOccupied(this.gambler.getWorld(), targetStoolPos);
+        if (targetStoolPos == null || this.gambler.hasVehicle()) {
+            return false;
+        }
+        World world = this.gambler.getWorld();
+        return !SitUtil.isSeatOccupied(world, targetStoolPos)
+                && !SitUtil.isSeatReservedForPlayer(world, targetStoolPos)
+                && !SitUtil.isSeatClaimedByOther(world, targetStoolPos, this.gambler.getUuid());
     }
 
     @Override
@@ -51,7 +60,7 @@ public class GamblerSeekTableGoal extends Goal {
                     targetStoolPos.getX() + 0.5,
                     targetStoolPos.getY(),
                     targetStoolPos.getZ() + 0.5,
-                    1.15 // Brisk, confident walking speed
+                    1.0
             );
         }
     }
@@ -62,6 +71,16 @@ public class GamblerSeekTableGoal extends Goal {
             return;
         }
 
+        World world = this.gambler.getWorld();
+
+        if (SitUtil.isSeatOccupied(world, targetStoolPos) || SitUtil.isSeatReservedForPlayer(world, targetStoolPos)) {
+            SitUtil.releaseSeatClaim(world, targetStoolPos, this.gambler.getUuid());
+            this.targetStoolPos = null;
+            return;
+        }
+
+        SitUtil.claimSeat(world, targetStoolPos, this.gambler.getUuid(), 100);
+
         this.gambler.getLookControl().lookAt(
                 targetStoolPos.getX() + 0.5,
                 targetStoolPos.getY() + 0.5,
@@ -69,13 +88,26 @@ public class GamblerSeekTableGoal extends Goal {
         );
 
         if (this.gambler.getBlockPos().isWithinDistance(targetStoolPos, 2.0)) {
-            World world = this.gambler.getWorld();
             if (!world.isClient() && !SitUtil.isSeatOccupied(world, targetStoolPos)) {
                 // Sit down on the gambling stool at calibrated height!
-                SitUtil.sitEntity(world, targetStoolPos, this.gambler, SitUtil.STOOL_OFFSET);
-                this.targetStoolPos = null;
+                if (SitUtil.sitEntity(world, targetStoolPos, this.gambler, SitUtil.STOOL_OFFSET)) {
+                    this.targetStoolPos = null;
+                } else {
+                    SitUtil.releaseSeatClaim(world, targetStoolPos, this.gambler.getUuid());
+                    this.targetStoolPos = null;
+                }
             }
         }
+    }
+
+    @Override
+    public void stop() {
+        World world = this.gambler.getWorld();
+        if (this.targetStoolPos != null) {
+            SitUtil.releaseSeatClaim(world, this.targetStoolPos, this.gambler.getUuid());
+            this.targetStoolPos = null;
+        }
+        this.searchCooldown = 100 + this.gambler.getRandom().nextInt(100);
     }
 
     private BlockPos findNearestGamblingStool() {
@@ -86,11 +118,14 @@ public class GamblerSeekTableGoal extends Goal {
         BlockPos nearest = null;
         double nearestDistSq = Double.MAX_VALUE;
 
-        // Full volumetric 3D scan within 20 blocks
+        // STRICT: Only GamblingStoolBlock adjacent to GamblingTableBlock
         for (BlockPos pos : BlockPos.iterate(origin.add(-radius, -4, -radius), origin.add(radius, 4, radius))) {
             BlockState state = world.getBlockState(pos);
             if (state.getBlock() instanceof GamblingStoolBlock) {
-                if (isAdjacentToGamblingTable(world, pos) && !SitUtil.isSeatOccupied(world, pos)) {
+                if (isAdjacentToGamblingTable(world, pos)
+                        && !SitUtil.isSeatOccupied(world, pos)
+                        && !SitUtil.isSeatReservedForPlayer(world, pos)
+                        && !SitUtil.isSeatClaimedByOther(world, pos, this.gambler.getUuid())) {
                     double distSq = origin.getSquaredDistance(pos);
                     if (distSq < nearestDistSq) {
                         nearestDistSq = distSq;

@@ -6,10 +6,10 @@
 		"GameRendererMixin",
 		"AbstractClientPlayerEntityMixin",
 		"MinecraftClientMixin",
-		"EntityMixin",
 		"EntityRendererMixin",
 		"LivingEntityRendererMixin",
-		"MouseMixin"
+		"MouseMixin",
+		"VillagerResemblingModelMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

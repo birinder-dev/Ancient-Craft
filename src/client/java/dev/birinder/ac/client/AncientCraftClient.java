@@ -3,6 +3,7 @@ package dev.birinder.ac.client;
 import dev.birinder.ac.block.ModBlocks;
 import dev.birinder.ac.client.gui.SpyglassHudOverlay;
 import dev.birinder.ac.client.render.GamblerEntityRenderer;
+import dev.birinder.ac.client.render.TavernVillagerEntityRenderer;
 import dev.birinder.ac.client.speech.SpeechBubbleManager;
 import dev.birinder.ac.entity.ModEntities;
 import dev.birinder.ac.entity.custom.GamblerEntity;
@@ -21,8 +22,6 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.passive.VillagerEntity;
-import net.minecraft.entity.passive.WanderingTraderEntity;
 import net.minecraft.item.AxeItem;
 import net.minecraft.item.SwordItem;
 import net.minecraft.sound.SoundEvent;
@@ -32,12 +31,23 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 
+import dev.birinder.ac.AncientCraft;
+import dev.birinder.ac.client.render.GuardEntityRenderer;
+import dev.birinder.ac.client.render.model.GuardEntityModel;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
+
+import dev.birinder.ac.entity.custom.TavernVillagerEntity;
+
 public class AncientCraftClient implements ClientModInitializer {
 
+	public static final EntityModelLayer GUARD_MODEL_LAYER = new EntityModelLayer(AncientCraft.id("guard"), "main");
+
 	private static long lastThreatCheckTime = 0;
+	private static long lastSeatedDialogueTime = 0;
 
 	private static boolean canSpeak(Entity entity) {
-		return entity instanceof VillagerEntity || entity instanceof WanderingTraderEntity || entity instanceof GamblerEntity;
+		return entity instanceof GamblerEntity || entity instanceof TavernVillagerEntity;
 	}
 
 	private static final String[] HURT_LINES = {
@@ -57,10 +67,28 @@ public class AncientCraftClient implements ClientModInitializer {
 		"Welcome! Best prices in the biome, guaranteed."
 	};
 
+	private static final String[] TAVERN_AMBIENT_LINES = {
+		"Looks like rain's brewing over the hills...",
+		"My joints ache today. Weather's turning foul for sure.",
+		"A fine crisp breeze today. Good for brewing ale.",
+		"Grain prices are highway robbery these days.",
+		"The blacksmith charged me two emeralds for a simple door hinge!",
+		"Merchant caravan from the dunes brought sour wine again.",
+		"Been tending fields since sunrise... my back is killing me.",
+		"Tending the sheep all day with wolves lurking in the scrub...",
+		"Another day, another harvest. At least the tavern is dry.",
+		"Look at that wanderer strutting around with weapons drawn...",
+		"These adventurers carry trouble wherever their boots step.",
+		"Always rummaging through our barrels. What are they looking for?!"
+	};
+
 	@Override
 	public void onInitializeClient() {
+		EntityModelLayerRegistry.registerModelLayer(GUARD_MODEL_LAYER, GuardEntityModel::getTexturedModelData);
 		EntityRendererRegistry.register(ModEntities.SLINGSHOT_PROJECTILE, FlyingItemEntityRenderer::new);
 		EntityRendererRegistry.register(ModEntities.GAMBLER, GamblerEntityRenderer::new);
+		EntityRendererRegistry.register(ModEntities.TAVERN_VILLAGER, TavernVillagerEntityRenderer::new);
+		EntityRendererRegistry.register(ModEntities.GUARD, GuardEntityRenderer::new);
 		EntityRendererRegistry.register(ModEntities.SEAT, dev.birinder.ac.client.render.EmptyEntityRenderer::new);
 
 		// Cutout rendering for ground pebble, table, and stools
@@ -74,10 +102,11 @@ public class AncientCraftClient implements ClientModInitializer {
 		// Register Spyglass HUD Inspection overlay
 		HudRenderCallback.EVENT.register(new SpyglassHudOverlay());
 
-		// Register Speech Bubble countdown tick & proximity threat check
+		// Register Speech Bubble countdown tick, proximity threat check, and ambient seated dialogue
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			SpeechBubbleManager.tick();
 			checkWeaponThreatProximity(client);
+			checkAmbientSeatedDialogue(client);
 		});
 
 		// 1. Being Hit: Random Hurt Line from locked-in v0 voice set
@@ -147,5 +176,40 @@ public class AncientCraftClient implements ClientModInitializer {
 				SpeechBubbleManager.say(living, THREAT_LINES[randomLineIndex], sound);
 			}
 		}
+	}
+
+	// Ambient Seated Banter: Exactly ONE seated villager in the vicinity speaks every 12-16 seconds via overhead speech bubble
+	private static void checkAmbientSeatedDialogue(MinecraftClient client) {
+		if (client.player == null || client.world == null) {
+			return;
+		}
+
+		long now = System.currentTimeMillis();
+		if (now - lastSeatedDialogueTime < 13000) { // Minimum 13 seconds between ambient chatter
+			return;
+		}
+
+		net.minecraft.util.math.Box searchBox = client.player.getBoundingBox().expand(14.0);
+		java.util.List<LivingEntity> seatedVillagers = client.world.getEntitiesByClass(
+				LivingEntity.class,
+				searchBox,
+				e -> canSpeak(e) && e.hasVehicle() && e.getVehicle() instanceof dev.birinder.ac.entity.custom.SeatEntity
+		);
+
+		if (seatedVillagers.isEmpty()) {
+			return;
+		}
+
+		lastSeatedDialogueTime = now;
+
+		// Pick exactly ONE seated villager to speak
+		LivingEntity speaker = seatedVillagers.get(client.world.random.nextInt(seatedVillagers.size()));
+		int lineIndex = client.world.random.nextInt(TAVERN_AMBIENT_LINES.length);
+		String dialogue = TAVERN_AMBIENT_LINES[lineIndex];
+
+		int soundIndex = client.world.random.nextInt(ModSounds.GREET_VOICES.length);
+		SoundEvent sound = ModSounds.GREET_VOICES[soundIndex];
+
+		SpeechBubbleManager.say(speaker, dialogue, sound);
 	}
 }

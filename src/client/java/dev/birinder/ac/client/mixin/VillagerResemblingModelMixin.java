@@ -27,7 +27,7 @@ public abstract class VillagerResemblingModelMixin<T extends Entity> extends Sin
                 robe = root.getChild("robe");
             }
 
-            if (this.riding) {
+            if (entity.hasVehicle()) {
                 // 1. Bent legs (sitting forward ~81 degrees matching player's BipedEntityModel)
                 if (root.hasChild("right_leg") && root.hasChild("left_leg")) {
                     ModelPart rightLeg = root.getChild("right_leg");
