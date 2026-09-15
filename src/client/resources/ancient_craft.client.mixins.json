@@ -9,7 +9,9 @@
 		"EntityRendererMixin",
 		"LivingEntityRendererMixin",
 		"MouseMixin",
-		"VillagerResemblingModelMixin"
+		"VillagerResemblingModelMixin",
+		"InGameHudMixin",
+		"HeldItemRendererMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

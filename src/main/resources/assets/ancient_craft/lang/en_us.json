@@ -18,5 +18,6 @@
   "entity.ancient_craft.tavern_villager": "Tavern Villager",
   "item.ancient_craft.tavern_villager_spawn_egg": "Tavern Villager Spawn Egg",
   "entity.ancient_craft.guard": "Town Guard",
-  "item.ancient_craft.guard_spawn_egg": "Town Guard Spawn Egg"
+  "item.ancient_craft.guard_spawn_egg": "Town Guard Spawn Egg",
+  "item.ancient_craft.tavern_card": "Tavern Card"
 }

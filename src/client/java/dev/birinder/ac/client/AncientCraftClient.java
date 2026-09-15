@@ -102,6 +102,39 @@ public class AncientCraftClient implements ClientModInitializer {
 		// Register Spyglass HUD Inspection overlay
 		HudRenderCallback.EVENT.register(new SpyglassHudOverlay());
 
+		// Register Client Command: /cards [1-9 / off] and /cardhand
+		net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
+			var cardsNode = net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("cards")
+					.executes(context -> {
+						boolean active = dev.birinder.ac.client.gambling.GamblingClientState.toggle(5);
+						sendGamblingStateFeedback(context.getSource(), active, dev.birinder.ac.client.gambling.GamblingClientState.getCardCount());
+						return 1;
+					})
+					.then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("off")
+							.executes(context -> {
+								dev.birinder.ac.client.gambling.GamblingClientState.setActive(false);
+								sendGamblingStateFeedback(context.getSource(), false, 0);
+								return 1;
+							}))
+					.then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument("count", com.mojang.brigadier.arguments.IntegerArgumentType.integer(0, 9))
+							.executes(context -> {
+								int count = com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(context, "count");
+								if (count <= 0) {
+									dev.birinder.ac.client.gambling.GamblingClientState.setActive(false);
+									sendGamblingStateFeedback(context.getSource(), false, 0);
+								} else {
+									dev.birinder.ac.client.gambling.GamblingClientState.setActive(true);
+									dev.birinder.ac.client.gambling.GamblingClientState.setCardCount(count);
+									sendGamblingStateFeedback(context.getSource(), true, count);
+								}
+								return 1;
+							}));
+
+			dispatcher.register(cardsNode);
+			dispatcher.register(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("cardhand")
+					.redirect(dispatcher.getRoot().getChild("cards")));
+		});
+
 		// Register Speech Bubble countdown tick, proximity threat check, and ambient seated dialogue
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			SpeechBubbleManager.tick();
@@ -211,5 +244,17 @@ public class AncientCraftClient implements ClientModInitializer {
 		SoundEvent sound = ModSounds.GREET_VOICES[soundIndex];
 
 		SpeechBubbleManager.say(speaker, dialogue, sound);
+	}
+
+	private static void sendGamblingStateFeedback(net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource source, boolean active, int count) {
+		if (active) {
+			source.sendFeedback(net.minecraft.text.Text.literal("♠ Gambling State: ACTIVE - Showing ")
+					.formatted(net.minecraft.util.Formatting.GOLD, net.minecraft.util.Formatting.BOLD)
+					.append(net.minecraft.text.Text.literal(count + (count == 1 ? " card" : " cards")).formatted(net.minecraft.util.Formatting.YELLOW, net.minecraft.util.Formatting.BOLD))
+					.append(net.minecraft.text.Text.literal(" in hand.").formatted(net.minecraft.util.Formatting.GOLD)));
+		} else {
+			source.sendFeedback(net.minecraft.text.Text.literal("♠ Gambling State: DEACTIVATED - Inventory restored.")
+					.formatted(net.minecraft.util.Formatting.GRAY));
+		}
 	}
 }

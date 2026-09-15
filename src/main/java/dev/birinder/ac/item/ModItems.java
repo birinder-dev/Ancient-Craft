@@ -52,6 +52,11 @@ public class ModItems {
             "tavern_bench",
             new BlockItem(ModBlocks.TAVERN_BENCH, new Item.Settings()));
 
+    // Tavern Playing Cards
+    public static final Item TAVERN_CARD = register(
+            "tavern_card",
+            new Item(new Item.Settings().maxCount(64)));
+
     // The Gambler Spawn Egg
     public static final Item GAMBLER_SPAWN_EGG = register(
             "gambler_spawn_egg",
@@ -91,6 +96,7 @@ public class ModItems {
                     entries.add(TAVERN_STOOL);
                     entries.add(TAVERN_TABLE);
                     entries.add(TAVERN_BENCH);
+                    entries.add(TAVERN_CARD);
                 });
 
         ItemGroupEvents.modifyEntriesEvent(ItemGroups.SPAWN_EGGS)
