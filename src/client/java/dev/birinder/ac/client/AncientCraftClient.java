@@ -51,35 +51,35 @@ public class AncientCraftClient implements ClientModInitializer {
 	}
 
 	private static final String[] HURT_LINES = {
-		"Ouch! Do I look like a training dummy to you?!",
-		"Hey! Keep your hands to yourself!",
-		"Ow! What is your problem?!"
+			"Ouch! Do I look like a training dummy to you?!",
+			"Hey! Keep your hands to yourself!",
+			"Ow! What is your problem?!"
 	};
 
 	private static final String[] THREAT_LINES = {
-		"Whoa! Point that pointy thing somewhere else!",
-		"Put that blade away, I am just a simple villager!",
-		"Is that sword really necessary for buying carrots?"
+			"Whoa! Point that pointy thing somewhere else!",
+			"Put that blade away, I am just a simple villager!",
+			"Is that sword really necessary for buying carrots?"
 	};
 
 	private static final String[] GREET_LINES = {
-		"Greetings, traveler! Got emeralds, or just wasting my time?",
-		"Welcome! Best prices in the biome, guaranteed."
+			"Greetings, traveler! Got emeralds, or just wasting my time?",
+			"Welcome! Best prices in the biome, guaranteed."
 	};
 
 	private static final String[] TAVERN_AMBIENT_LINES = {
-		"Looks like rain's brewing over the hills...",
-		"My joints ache today. Weather's turning foul for sure.",
-		"A fine crisp breeze today. Good for brewing ale.",
-		"Grain prices are highway robbery these days.",
-		"The blacksmith charged me two emeralds for a simple door hinge!",
-		"Merchant caravan from the dunes brought sour wine again.",
-		"Been tending fields since sunrise... my back is killing me.",
-		"Tending the sheep all day with wolves lurking in the scrub...",
-		"Another day, another harvest. At least the tavern is dry.",
-		"Look at that wanderer strutting around with weapons drawn...",
-		"These adventurers carry trouble wherever their boots step.",
-		"Always rummaging through our barrels. What are they looking for?!"
+			"Looks like rain's brewing over the hills...",
+			"My joints ache today. Weather's turning foul for sure.",
+			"A fine crisp breeze today. Good for brewing ale.",
+			"Grain prices are highway robbery these days.",
+			"The blacksmith charged me two emeralds for a simple door hinge!",
+			"Merchant caravan from the dunes brought sour wine again.",
+			"Been tending fields since sunrise... my back is killing me.",
+			"Tending the sheep all day with wolves lurking in the scrub...",
+			"Another day, another harvest. At least the tavern is dry.",
+			"Look at that wanderer strutting around with weapons drawn...",
+			"These adventurers carry trouble wherever their boots step.",
+			"Always rummaging through our barrels. What are they looking for?!"
 	};
 
 	@Override
@@ -103,39 +103,45 @@ public class AncientCraftClient implements ClientModInitializer {
 		HudRenderCallback.EVENT.register(new SpyglassHudOverlay());
 
 		// Register Client Command: /cards [1-9 / off] and /cardhand
-		net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
-			var cardsNode = net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("cards")
-					.executes(context -> {
-						boolean active = dev.birinder.ac.client.gambling.GamblingClientState.toggle(5);
-						sendGamblingStateFeedback(context.getSource(), active, dev.birinder.ac.client.gambling.GamblingClientState.getCardCount());
-						return 1;
-					})
-					.then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("off")
+		net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback.EVENT
+				.register((dispatcher, registryAccess) -> {
+					var cardsNode = net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("cards")
 							.executes(context -> {
-								dev.birinder.ac.client.gambling.GamblingClientState.setActive(false);
-								sendGamblingStateFeedback(context.getSource(), false, 0);
+								boolean active = dev.birinder.ac.client.gambling.GamblingClientState.toggle(5);
+								sendGamblingStateFeedback(context.getSource(), active,
+										dev.birinder.ac.client.gambling.GamblingClientState.getCardCount());
 								return 1;
-							}))
-					.then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument("count", com.mojang.brigadier.arguments.IntegerArgumentType.integer(0, 9))
-							.executes(context -> {
-								int count = com.mojang.brigadier.arguments.IntegerArgumentType.getInteger(context, "count");
-								if (count <= 0) {
-									dev.birinder.ac.client.gambling.GamblingClientState.setActive(false);
-									sendGamblingStateFeedback(context.getSource(), false, 0);
-								} else {
-									dev.birinder.ac.client.gambling.GamblingClientState.setActive(true);
-									dev.birinder.ac.client.gambling.GamblingClientState.setCardCount(count);
-									sendGamblingStateFeedback(context.getSource(), true, count);
-								}
-								return 1;
-							}));
+							})
+							.then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("off")
+									.executes(context -> {
+										dev.birinder.ac.client.gambling.GamblingClientState.setActive(false);
+										sendGamblingStateFeedback(context.getSource(), false, 0);
+										return 1;
+									}))
+							.then(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager
+									.argument("count", com.mojang.brigadier.arguments.IntegerArgumentType.integer(0, 9))
+									.executes(context -> {
+										int count = com.mojang.brigadier.arguments.IntegerArgumentType
+												.getInteger(context, "count");
+										if (count <= 0) {
+											dev.birinder.ac.client.gambling.GamblingClientState.setActive(false);
+											sendGamblingStateFeedback(context.getSource(), false, 0);
+										} else {
+											dev.birinder.ac.client.gambling.GamblingClientState.setActive(true);
+											dev.birinder.ac.client.gambling.GamblingClientState.setCardCount(count);
+											sendGamblingStateFeedback(context.getSource(), true, count);
+										}
+										return 1;
+									}));
 
-			dispatcher.register(cardsNode);
-			dispatcher.register(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("cardhand")
-					.redirect(dispatcher.getRoot().getChild("cards")));
-		});
+					dispatcher.register(cardsNode);
+					dispatcher
+							.register(net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal("cardhand")
+									.redirect(dispatcher.getRoot().getChild("cards")));
+				});
 
-		// Register Speech Bubble countdown tick, proximity threat check, and ambient seated dialogue
+		// Register Speech Bubble countdown tick, proximity threat check, and ambient
+		// seated dialogue
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			SpeechBubbleManager.tick();
 			checkWeaponThreatProximity(client);
@@ -154,7 +160,8 @@ public class AncientCraftClient implements ClientModInitializer {
 
 		// 2. Right-Clicking: Random Greeting Line from locked-in v0 voice set
 		UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
-			if (world.isClient() && entity instanceof LivingEntity living && canSpeak(living) && hand == Hand.MAIN_HAND) {
+			if (world.isClient() && entity instanceof LivingEntity living && canSpeak(living)
+					&& hand == Hand.MAIN_HAND) {
 				int randomLineIndex = player.getRandom().nextInt(GREET_LINES.length);
 				SoundEvent sound = ModSounds.GREET_VOICES[randomLineIndex];
 				SpeechBubbleManager.say(living, GREET_LINES[randomLineIndex], sound);
@@ -182,7 +189,8 @@ public class AncientCraftClient implements ClientModInitializer {
 				});
 	}
 
-	// Proximity check: If player is within 4.5 blocks holding a drawn Sword/Axe facing a villager
+	// Proximity check: If player is within 4.5 blocks holding a drawn Sword/Axe
+	// facing a villager
 	private static void checkWeaponThreatProximity(MinecraftClient client) {
 		if (client.player == null || client.world == null) {
 			return;
@@ -211,7 +219,8 @@ public class AncientCraftClient implements ClientModInitializer {
 		}
 	}
 
-	// Ambient Seated Banter: Exactly ONE seated villager in the vicinity speaks every 12-16 seconds via overhead speech bubble
+	// Ambient Seated Banter: Exactly ONE seated villager in the vicinity speaks
+	// every 12-16 seconds via overhead speech bubble
 	private static void checkAmbientSeatedDialogue(MinecraftClient client) {
 		if (client.player == null || client.world == null) {
 			return;
@@ -226,8 +235,8 @@ public class AncientCraftClient implements ClientModInitializer {
 		java.util.List<LivingEntity> seatedVillagers = client.world.getEntitiesByClass(
 				LivingEntity.class,
 				searchBox,
-				e -> canSpeak(e) && e.hasVehicle() && e.getVehicle() instanceof dev.birinder.ac.entity.custom.SeatEntity
-		);
+				e -> canSpeak(e) && e.hasVehicle()
+						&& e.getVehicle() instanceof dev.birinder.ac.entity.custom.SeatEntity);
 
 		if (seatedVillagers.isEmpty()) {
 			return;
@@ -246,12 +255,15 @@ public class AncientCraftClient implements ClientModInitializer {
 		SpeechBubbleManager.say(speaker, dialogue, sound);
 	}
 
-	private static void sendGamblingStateFeedback(net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource source, boolean active, int count) {
+	private static void sendGamblingStateFeedback(
+			net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource source, boolean active, int count) {
 		if (active) {
 			source.sendFeedback(net.minecraft.text.Text.literal("♠ Gambling State: ACTIVE - Showing ")
 					.formatted(net.minecraft.util.Formatting.GOLD, net.minecraft.util.Formatting.BOLD)
-					.append(net.minecraft.text.Text.literal(count + (count == 1 ? " card" : " cards")).formatted(net.minecraft.util.Formatting.YELLOW, net.minecraft.util.Formatting.BOLD))
-					.append(net.minecraft.text.Text.literal(" in hand.").formatted(net.minecraft.util.Formatting.GOLD)));
+					.append(net.minecraft.text.Text.literal(count + (count == 1 ? " card" : " cards"))
+							.formatted(net.minecraft.util.Formatting.YELLOW, net.minecraft.util.Formatting.BOLD))
+					.append(net.minecraft.text.Text.literal(" in hand.")
+							.formatted(net.minecraft.util.Formatting.GOLD)));
 		} else {
 			source.sendFeedback(net.minecraft.text.Text.literal("♠ Gambling State: DEACTIVATED - Inventory restored.")
 					.formatted(net.minecraft.util.Formatting.GRAY));

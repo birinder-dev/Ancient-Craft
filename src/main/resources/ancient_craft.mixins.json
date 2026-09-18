@@ -3,7 +3,6 @@
 	"package": "dev.birinder.ac.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"ExampleMixin",
 		"EntityMixin"
 	],
 	"injectors": {

@@ -55,7 +55,14 @@ replay_*.log
 *.hprof
 *.jfr
 
-gradle-9.5.1-bin.zip
-
 # chat history logs
 .chat_history/
+
+# python & voice generation scripts
+generate_voices.py
+*.py
+__pycache__/
+*.pyc
+
+# unused root logos and assets
+logo.png

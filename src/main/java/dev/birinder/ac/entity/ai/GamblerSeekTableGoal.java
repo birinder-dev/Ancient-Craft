@@ -60,8 +60,7 @@ public class GamblerSeekTableGoal extends Goal {
                     targetStoolPos.getX() + 0.5,
                     targetStoolPos.getY(),
                     targetStoolPos.getZ() + 0.5,
-                    1.0
-            );
+                    1.0);
         }
     }
 
@@ -84,8 +83,7 @@ public class GamblerSeekTableGoal extends Goal {
         this.gambler.getLookControl().lookAt(
                 targetStoolPos.getX() + 0.5,
                 targetStoolPos.getY() + 0.5,
-                targetStoolPos.getZ() + 0.5
-        );
+                targetStoolPos.getZ() + 0.5);
 
         if (this.gambler.getBlockPos().isWithinDistance(targetStoolPos, 2.0)) {
             if (!world.isClient() && !SitUtil.isSeatOccupied(world, targetStoolPos)) {

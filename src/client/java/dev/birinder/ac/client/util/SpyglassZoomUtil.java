@@ -27,3 +27,4 @@ public class SpyglassZoomUtil {
         return ZOOM_STEPS[currentStepIndex];
     }
 }
+

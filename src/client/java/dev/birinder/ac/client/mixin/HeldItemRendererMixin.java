@@ -1,7 +1,6 @@
 package dev.birinder.ac.client.mixin;
 
 import dev.birinder.ac.client.gambling.GamblingClientState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -14,7 +13,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
 import org.joml.Matrix4f;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,10 +25,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(HeldItemRenderer.class)
 public abstract class HeldItemRendererMixin {
-
-    @Shadow
-    @Final
-    private MinecraftClient client;
 
     @Shadow
     private void renderArm(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, Arm arm) {
@@ -83,9 +77,9 @@ public abstract class HeldItemRendererMixin {
         matrices.translate(0.0F, -0.36F + pitchFactor * -0.05F, -0.48F);
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(14.0F));
 
-        // 3D Card physical dimensions: prominent and readable
-        float cardW = 0.26F; // Width in meters (~26 cm)
-        float cardH = 0.38F; // Height in meters (~38 cm)
+        // 3D Card physical dimensions: compact height, wider cards
+        float cardW = 0.28F; // Width in meters (~28 cm)
+        float cardH = 0.30F; // Height in meters (~30 cm, comfortably in lower screen)
 
         // Dynamic spacing and fan angle based on total cards
         float angleStep;
@@ -95,14 +89,14 @@ public abstract class HeldItemRendererMixin {
             angleStep = 0.0F;
             cardSpacing = 0.0F;
         } else if (count == 2) {
-            angleStep = 8.0F;
-            cardSpacing = 0.085F;
+            angleStep = 10.0F;
+            cardSpacing = 0.100F;
         } else if (count <= 5) {
-            angleStep = 6.0F;
-            cardSpacing = 0.070F;
+            angleStep = 7.5F;
+            cardSpacing = 0.082F;
         } else {
-            angleStep = Math.max(3.2F, 24.0F / count);
-            cardSpacing = Math.max(0.038F, 0.065F - (count - 5) * 0.005F);
+            angleStep = Math.max(3.8F, 30.0F / count);
+            cardSpacing = Math.max(0.045F, 0.076F - (count - 5) * 0.005F);
         }
 
         int selectedSlot = player.getInventory().selectedSlot;
@@ -113,29 +107,26 @@ public abstract class HeldItemRendererMixin {
         int cardLight = (skyLight << 16) | blockLight;
 
         for (int i = 0; i < count; i++) {
-            // Symmetrical offset t from center (e.g. count=2: -0.5, +0.5; count=5:
-            // -2,-1,0,1,2)
+            // Symmetrical offset t from center (e.g. count=2: -0.5, +0.5; count=5: -2,-1,0,1,2)
             float t = (float) (i - (count - 1) / 2.0);
 
             float cardX = t * cardSpacing;
-            // Fan divergence: Left cards (t < 0) tilt left (+Z rot), Right cards (t > 0)
-            // tilt right (-Z rot)
+            // Fan divergence: Left cards (t < 0) tilt left (+Z rot), Right cards (t > 0) tilt right (-Z rot)
             float angle = -t * angleStep;
 
             // Circular arc: center card is highest, outer cards curve down slightly
             float arcY = -(t * t) * 0.004F;
-            // Layer depth: successive cards overlap cleanly from left to right to prevent
-            // Z-fighting
+            // Layer depth: successive cards overlap cleanly from left to right to prevent Z-fighting
             float arcZ = -i * 0.002F;
 
             float cardPivotY = arcY;
 
-            // Hotbar selection feedback: selected card lifts up and steps forward towards
-            // the player!
-            boolean isSelected = (i == selectedSlot);
+            // Hotbar selection feedback: map active slot centered around 5th slot (index 4)
+            int selectedCardIndex = GamblingClientState.getCardIndexForSlot(selectedSlot, count);
+            boolean isSelected = (i == selectedCardIndex);
             if (isSelected) {
-                cardPivotY += 0.055F; // Lifts up
-                arcZ += 0.020F; // Steps forward towards player
+                cardPivotY += 0.045F; // Lifts up
+                arcZ += 0.020F;       // Steps forward towards player
             }
 
             matrices.push();

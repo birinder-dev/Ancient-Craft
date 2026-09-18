@@ -5,11 +5,11 @@
 	"name": "Ancient Craft",
 	"description": "This is an example description! Tell everyone what your mod is about!",
 	"authors": [
-		"Me!"
+		"birinder-dev"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/birinder-dev/Ancient-Craft",
+		"sources": "https://github.com/birinder-dev/Ancient-Craft"
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/ancient_craft/icon.png",
